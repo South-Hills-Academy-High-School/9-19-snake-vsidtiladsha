@@ -15,7 +15,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     vy = 1
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
-    if (atefoodflag == 0) {
+    if (atefoodflag == 0 && snakehead.overlapsWith(snakefood)) {
         snakebody.unshift(sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -40,6 +40,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
     }
     atefoodflag += 1
 })
+sprites.onCreated(SpriteKind.Player, function (sprite) {
+	
+})
 let snakeheady = 0
 let snakeheadx = 0
 let updatevy = 0
@@ -48,11 +51,13 @@ let vy = 0
 let vx = 0
 let foody = 0
 let foodx = 0
+let snakefood: Sprite = null
+let snakehead: Sprite = null
 let atefoodflag = 0
 let snakebody: Sprite[] = []
 snakebody = []
 atefoodflag = 0
-let snakehead = sprites.create(img`
+snakehead = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -70,7 +75,8 @@ let snakehead = sprites.create(img`
     . . . . . . 3 3 3 3 3 3 3 3 3 3 
     . . . . . . 3 3 3 3 3 3 3 3 3 3 
     `, SpriteKind.Player)
-let snakefood = sprites.create(img`
+snakehead.setFlag(SpriteFlag.AutoDestroy, true)
+snakefood = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -125,8 +131,11 @@ game.onUpdate(function () {
 })
 game.onUpdate(function () {
     for (let value of snakebody) {
-        if (!(value == snakebody[0]) && snakehead.overlapsWith(value)) {
+        if (!(value == snakebody[1]) && !(value == snakebody[0] && snakehead.overlapsWith(value))) {
             game.over(false)
         }
+    }
+    if (snakeheadx < 0 || (snakeheadx < 160 || (snakeheady < 0 || snakeheady < 120))) {
+    	
     }
 })
